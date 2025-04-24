@@ -1,0 +1,107 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon STage de Seconde</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header styles="border: red solid 1px;">
+        <div class="header-middle-container" >
+            <div class="logo">
+                <img src="logo.png" alt="Logo">
+            </div>
+            <div class="yellow-section"></div>
+            <div class="blue-section">
+                <h1>Mon <span class="outline">ST</span>age de seconde</h1>
+            </div>
+        </div>
+        <!-- <div class="blue-section-bottom"></div> -->
+
+    </header>
+    <!-- <header>
+        <img src="header.png" alt="Header" class="img-full" />
+    </header> -->
+    <main>
+        <div class="main-container">
+            <div id="error-alert" class="alert">
+                ⚠️ An error occurred. Please try again.
+            </div>
+            <div class="connexion">
+                <div class="form-container">
+                    <input type="text" id="device-name" placeholder="Enter robot's name">
+                    <button id="connect-button">Connect</button>
+                </div>
+                <div id="status-container">
+                    <div id="status-indicator" class="disconnected"></div>
+                    <span id="status-text">Status: Disconnected</span>
+                </div>
+            </div>
+            <!-- <div id="status-message">Status: Disconnected</div> -->
+
+
+            <div class="container">
+                <div class="column">
+                    <span class="legend">BLE Remote</span>
+                    <span class="legend">IR Remote</span>
+                    <span class="legend">Line Following</span>
+                </div>
+                <div class="column">
+                    <div class="row switch">
+                        <label class="switch-label">
+                            <input type="checkbox" id="ble-remote">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="row switch">
+                        <label class="switch-label">
+                            <input type="checkbox" id="ir-remote">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="row switch">
+                        <label class="switch-label">
+                            <input type="checkbox" id="line-following">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="column mobile-hide">
+                    <img src="logo.png" alt="Logo">
+                </div>
+            </div>
+
+            <div id="direction-container" class="direction-container">
+                <div></div>
+                <button class="direction-button" id="F">F</button>
+                <div></div>
+                
+                <button class="direction-button" id="L">L</button>
+                <button class="direction-button" id="S">S</button>
+                <button class="direction-button" id="R">R</button>
+                
+                <div></div>
+                <button class="direction-button" id="B">B</button>
+                <div></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="blue-section-bottom"></div>
+        <div class="yellow-section-bottom">
+            <div class="rectangles">
+                <div class="rectangle"></div>
+                <div class="rectangle"></div>
+                <div class="rectangle"></div>
+                <div class="rectangle"></div>
+            </div>
+        </div>
+        <div class="white-section-bottom"></div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
