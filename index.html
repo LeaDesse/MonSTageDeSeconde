@@ -9,41 +9,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header styles="border: red solid 1px;">
-        <div class="header-middle-container" >
-            <div class="logo">
+    <!-- Title -->
+    <h1>Alphabot Remote Control - WebApp</h1>
+
+    <header>
+        <div class="white-space"></div>
+        <!-- Header -->
+        <div class="header-container" >
+            <div class="header-logo-section">
                 <img src="logo.png" alt="Logo">
             </div>
-            <div class="yellow-section"></div>
-            <div class="blue-section">
-                <h1>Mon <span class="outline">ST</span>age de seconde</h1>
-            </div>
+            <div class="header-Z-section"></div>
+            <div class="header-blue-section"></div>
         </div>
-        <!-- <div class="blue-section-bottom"></div> -->
-
     </header>
-    <!-- <header>
-        <img src="header.png" alt="Header" class="img-full" />
-    </header> -->
+
     <main>
         <div class="main-container">
             <div id="error-alert" class="alert">
                 ⚠️ An error occurred. Please try again.
             </div>
-            <div class="connexion">
-                <div class="form-container">
+            <div class="connexion-section">
+                <div id="form">
                     <input type="text" id="device-name" placeholder="Enter robot's name">
                     <button id="connect-button">Connect</button>
                 </div>
-                <div id="status-container">
+                <div id="status">
                     <div id="status-indicator" class="disconnected"></div>
                     <span id="status-text">Status: Disconnected</span>
                 </div>
             </div>
-            <!-- <div id="status-message">Status: Disconnected</div> -->
 
-
-            <div class="container">
+            <div class="switches-section">
                 <div class="column">
                     <span class="legend">BLE Remote</span>
                     <span class="legend">IR Remote</span>
@@ -70,29 +67,22 @@
                     </div>
                 </div>
                 <div class="column mobile-hide">
-                    <img src="logo.png" alt="Logo">
+                    <img src="robot_martien.png" alt="Robot Martien">
                 </div>
             </div>
 
             <div id="direction-container" class="direction-container">
-                <div></div>
-                <button class="direction-button" id="F">F</button>
-                <div></div>
-                
-                <button class="direction-button" id="L">L</button>
-                <button class="direction-button" id="S">S</button>
-                <button class="direction-button" id="R">R</button>
-                
-                <div></div>
-                <button class="direction-button" id="B">B</button>
-                <div></div>
+                <button class="direction-button" id="forward"></button>
+                <button class="direction-button" id="left"></button>
+                <button class="direction-button" id="stop"></button>
+                <button class="direction-button" id="right"></button>
+                <button class="direction-button" id="backward"></button>
             </div>
         </div>
     </main>
 
     <footer>
-        <div class="blue-section-bottom"></div>
-        <div class="yellow-section-bottom">
+        <div class="footer-yellow-line-section">
             <div class="rectangles">
                 <div class="rectangle"></div>
                 <div class="rectangle"></div>
@@ -100,7 +90,14 @@
                 <div class="rectangle"></div>
             </div>
         </div>
-        <div class="white-section-bottom"></div>
+        <div class="footer-white-line-section">
+            <img src="IPCEI_logo.png" alt="IPCEI logo" class="side-image">
+            <div class="contact-info">
+                <div>Contact : Léa Desse</div>
+                <div id="email">lea.desse@st.com</div>
+            </div>
+            <img src="STEM_logo.png" alt="STEM logo" class="side-image">
+        </div>
     </footer>
     <script src="script.js"></script>
 </body>
