@@ -1,7 +1,8 @@
 let device;
 let server;
 let bluetoothCharacteristic;
-let isOperationInProgress = false; // Initialize the flag
+let isOperationInProgress = false;
+let commandQueue = [];
 
 document.getElementById('connect-button').addEventListener('click', async () => {
     const button = document.getElementById('connect-button');
@@ -13,14 +14,12 @@ document.getElementById('connect-button').addEventListener('click', async () => 
         statusMessage.textContent = 'Status: Connection on going';
 
         try {
-            // Request Bluetooth device with the specified name and optional services
             device = await navigator.bluetooth.requestDevice({
                 filters: [{ name: deviceName }],
-                optionalServices: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'] // Nordic UART Service UUID
+                optionalServices: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e']
             });
 
             if (device.name === deviceName) {
-                // Connect to the GATT server
                 server = await device.gatt.connect();
                 console.log('Connected to', device.name);
                 statusMessage.textContent = `Status: Connected to ${device.name}`;
@@ -38,7 +37,6 @@ document.getElementById('connect-button').addEventListener('click', async () => 
         }
     } else if (button.textContent === 'Disconnect') {
         if (device && server) {
-            // Disconnect from the GATT server
             server.disconnect();
             statusMessage.textContent = 'Status: Disconnected';
             button.textContent = 'Connect';
@@ -49,71 +47,56 @@ document.getElementById('connect-button').addEventListener('click', async () => 
     }
 });
 
-// Select all switches
 const switches = document.querySelectorAll('.switch-label input[type="checkbox"]');
 const bleRemote = document.getElementById('ble-remote');
 const irRemote = document.getElementById('ir-remote');
 const lineFollowing = document.getElementById('line-following');
 const directionContainer = document.getElementById('direction-container');
 
-// Add an event listener to each switch
 switches.forEach(switchElement => {
     switchElement.addEventListener('change', () => {
         if (switchElement.checked) {
-            // Deactivate all other switches
             switches.forEach(otherSwitch => {
                 if (otherSwitch !== switchElement) {
                     otherSwitch.checked = false;
                 }
             });
 
-            // Send mode command based on the switch activated
             if (bleRemote.checked) {
-                sendBluetoothCommand('Mode BLE');
+                enqueueCommand('Mode BLE');
                 directionContainer.classList.add('show');
             } else if (irRemote.checked) {
-                sendBluetoothCommand('Mode IR');
+                enqueueCommand('Mode IR');
                 directionContainer.classList.remove('show');
             } else if (lineFollowing.checked) {
-                sendBluetoothCommand('Mode Line');
+                enqueueCommand('Mode Line');
                 directionContainer.classList.remove('show');
             }
         }
     });
 });
 
-// Debounce function to limit how often a function can be called
-function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-}
-
-// Add event listeners for directional buttons with debouncing
 const directionButtons = document.querySelectorAll('.direction-button');
 
 directionButtons.forEach(button => {
-    button.addEventListener('mousedown', debounce(() => {
+    button.addEventListener('mousedown', () => {
         const command = button.id.charAt(0).toUpperCase() + ' pressed';
-        sendBluetoothCommand(command);
-    }, 300));
+        enqueueCommand(command);
+    });
 
-    button.addEventListener('mouseup', debounce(() => {
+    button.addEventListener('mouseup', () => {
         const command = button.id.charAt(0).toUpperCase() + ' released';
-        sendBluetoothCommand(command);
-    }, 300));
+        enqueueCommand(command);
+    });
 });
 
-async function sendBluetoothCommand(commandString) {
-    const serviceUuid = '6e400001-b5a3-f393-e0a9-e50e24dcca9e'; // Nordic UART Service UUID
-    const characteristicUuid = '6e400002-b5a3-f393-e0a9-e50e24dcca9e'; // TX Characteristic UUID
-
-    if (isOperationInProgress) {
-        showError('GATT operation already in progress');
+async function processCommandQueue() {
+    if (isOperationInProgress || commandQueue.length === 0) {
         return;
     }
+
+    isOperationInProgress = true;
+    const commandString = commandQueue.shift();
 
     try {
         if (!device || !server || !device.gatt.connected) {
@@ -121,19 +104,14 @@ async function sendBluetoothCommand(commandString) {
             return;
         }
 
-        isOperationInProgress = true;
-
-        // If the characteristic isn’t cached yet, retrieve it
         if (!bluetoothCharacteristic) {
-            const service = await server.getPrimaryService(serviceUuid);
-            bluetoothCharacteristic = await service.getCharacteristic(characteristicUuid);
+            const service = await server.getPrimaryService('6e400001-b5a3-f393-e0a9-e50e24dcca9e');
+            bluetoothCharacteristic = await service.getCharacteristic('6e400002-b5a3-f393-e0a9-e50e24dcca9e');
         }
 
-        // Convert the command string to bytes
         const encoder = new TextEncoder();
         const data = encoder.encode(commandString);
 
-        // Write the bytes to the characteristic
         await bluetoothCharacteristic.writeValue(data);
         console.log('Command sent:', commandString);
     } catch (error) {
@@ -141,7 +119,13 @@ async function sendBluetoothCommand(commandString) {
         console.error('Send command error:', error);
     } finally {
         isOperationInProgress = false;
+        processCommandQueue();
     }
+}
+
+function enqueueCommand(commandString) {
+    commandQueue.push(commandString);
+    processCommandQueue();
 }
 
 function showError(message, error) {
@@ -160,7 +144,6 @@ function showError(message, error) {
 
 window.addEventListener('beforeunload', () => {
     if (device && server) {
-        // Disconnect from the GATT server before unloading the page
         server.disconnect();
         statusMessage.classList.remove('connected', 'failed');
         statusMessage.classList.add('disconnected');

@@ -105,27 +105,6 @@ main {
     margin-top: 50px;
 }
 
-.alert {
-    position: fixed;
-    top: 110px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #ff4d4f;
-    color: white;
-    padding: 1rem 2rem;
-    border-radius: 8px;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    z-index: 9999;
-    opacity: 0;
-    transition: opacity 0.4s ease, top 0.4s ease;
-    font-size: 12px;
-}
-
-.alert.show {
-    opacity: 1;
-}
-
 .hidden {
     display: none;
 }
@@ -421,10 +400,6 @@ footer {
         transform: none;
         top: 60px;
     }
-
-    .footer-white-line-section {
-        padding-bottom: 100px;
-    }
 }
 
 @media (max-width: 700px) {
@@ -490,6 +465,10 @@ footer {
 
     .main-container {
         margin-top: 20px;
+    }
+
+    .footer-white-line-section {
+        padding-bottom: 100px;
     }
     
     
