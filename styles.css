@@ -105,12 +105,32 @@ main {
     margin-top: 50px;
 }
 
-.hidden {
+.alert {
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background-color: #faf1c7;
+    color: #03234B;
+    padding: 10px;
+    border: 1px solid #FFD200;
+    border-radius: 5px;
+    transition: opacity 0.4s ease;
+    opacity: 0;
     display: none;
 }
 
+.hidden {
+    opacity: 0;
+    display: none;
+    transition: opacity 0.4s ease;
+}
+
 .show{
-    opacity:1;
+    opacity: 1;
+    display: block;
+    transition: opacity 0.4s ease;
 }
 
 .connexion-section {

@@ -19,16 +19,15 @@ document.getElementById('connect-button').addEventListener('click', async () => 
                 optionalServices: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e']
             });
 
-            if (device.name === deviceName) {
-                server = await device.gatt.connect();
-                console.log('Connected to', device.name);
-                statusMessage.textContent = `Status: Connected to ${device.name}`;
-                statutIndicator.classList.remove('disconnected');
-                statutIndicator.classList.add('connected');
-                button.textContent = 'Disconnect';
-            } else {
-                statusMessage.textContent = 'Status: Device not found';
-            }
+            server = await device.gatt.connect();
+            console.log('Connected to', device.name);
+            statusMessage.textContent = `Status: Connected to ${device.name}`;
+            statutIndicator.classList.remove('disconnected');
+            statutIndicator.classList.add('connected');
+            button.textContent = 'Disconnect';
+
+            // Add event listener for disconnection
+            device.addEventListener('gattserverdisconnected', onDisconnected);
         } catch (error) {
             statusMessage.textContent = 'Status: Connection failed';
             statutIndicator.classList.remove('disconnected');
@@ -36,16 +35,26 @@ document.getElementById('connect-button').addEventListener('click', async () => 
             console.error('Connection error:', error);
         }
     } else if (button.textContent === 'Disconnect') {
-        if (device && server) {
-            server.disconnect();
-            statusMessage.textContent = 'Status: Disconnected';
-            button.textContent = 'Connect';
-            statutIndicator.classList.remove('connected', 'failed');
-            statutIndicator.classList.add('disconnected');
-            console.log('Disconnected from', device.name);
-        }
+        disconnectDevice();
     }
 });
+
+function onDisconnected() {
+    console.log('Device disconnected');
+    const statusMessage = document.getElementById('status-text');
+    const statutIndicator = document.getElementById('status-indicator');
+    statusMessage.textContent = 'Status: Disconnected';
+    statutIndicator.classList.remove('connected', 'failed');
+    statutIndicator.classList.add('disconnected');
+    document.getElementById('connect-button').textContent = 'Connect';
+}
+
+function disconnectDevice() {
+    if (device && server) {
+        server.disconnect();
+        onDisconnected();
+    }
+}
 
 const switches = document.querySelectorAll('.switch-label input[type="checkbox"]');
 const bleRemote = document.getElementById('ble-remote');
@@ -104,10 +113,8 @@ async function processCommandQueue() {
             return;
         }
 
-        if (!bluetoothCharacteristic) {
-            const service = await server.getPrimaryService('6e400001-b5a3-f393-e0a9-e50e24dcca9e');
-            bluetoothCharacteristic = await service.getCharacteristic('6e400002-b5a3-f393-e0a9-e50e24dcca9e');
-        }
+        const service = await server.getPrimaryService('6e400001-b5a3-f393-e0a9-e50e24dcca9e');
+        bluetoothCharacteristic = await service.getCharacteristic('6e400002-b5a3-f393-e0a9-e50e24dcca9e');
 
         const encoder = new TextEncoder();
         const data = encoder.encode(commandString);
@@ -134,17 +141,23 @@ function showError(message, error) {
     alertBox.classList.remove('hidden');
     alertBox.classList.add('show');
 
+    console.log('Error displayed:', alertBox.textContent);
+
+    // Hide the error message after 4 seconds
     setTimeout(() => {
         alertBox.classList.remove('show');
+        console.log('Removing show class');
         setTimeout(() => {
             alertBox.classList.add('hidden');
-        }, 400);
+            console.log('Adding hidden class');
+        }, 400); // This should match the transition duration
     }, 4000);
 }
 
 window.addEventListener('beforeunload', () => {
     if (device && server) {
         server.disconnect();
+        const statusMessage = document.getElementById('status-text');
         statusMessage.classList.remove('connected', 'failed');
         statusMessage.classList.add('disconnected');
         console.log('Disconnected from', device.name);
