@@ -88,14 +88,35 @@ switches.forEach(switchElement => {
 const directionButtons = document.querySelectorAll('.direction-button');
 
 directionButtons.forEach(button => {
+
     button.addEventListener('mousedown', () => {
         const command = button.id.charAt(0).toUpperCase() + ' pressed';
         enqueueCommand(command);
+        button.classList.add('active');
     });
 
     button.addEventListener('mouseup', () => {
         const command = button.id.charAt(0).toUpperCase() + ' released';
         enqueueCommand(command);
+        button.classList.remove('active');
+    });
+
+
+    button.addEventListener('touchstart', (event) => {
+        event.preventDefault();
+        const command = button.id.charAt(0).toUpperCase() + ' pressed';
+        enqueueCommand(command);
+        button.classList.add('active');
+    });
+
+    button.addEventListener('touchend', () => {
+        const command = button.id.charAt(0).toUpperCase() + ' released';
+        enqueueCommand(command);
+        button.classList.remove('active');
+    });
+
+    button.addEventListener('touchcancel', () => {
+        button.classList.remove('active');
     });
 });
 
