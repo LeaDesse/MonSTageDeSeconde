@@ -209,7 +209,7 @@ button:hover {
 .switches-section {
     display: flex;
     justify-content: space-between;
-    margin-top: 5vh;
+    margin-top: 3vh;
 }
 
 .switches-section .row {
@@ -376,7 +376,7 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 30px;
 
 }
 
@@ -421,6 +421,10 @@ footer {
         transform: none;
         top: 60px;
     }
+
+    .footer-white-line-section {
+        padding-bottom: 30px;
+    }
 }
 
 @media (max-width: 700px) {
@@ -457,7 +461,7 @@ footer {
     }
 
     .switches-section .column img {
-        height: 150px;
+        height: 130px;
     }
 
     .switches-section .legend {
@@ -485,7 +489,7 @@ footer {
     }
 
     .main-container {
-        margin-top: 30px;
+        margin-top: 20px;
     }
     
     
